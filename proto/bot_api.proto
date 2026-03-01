@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package bot_api;
+
+option go_package = "github.com/magomedcoder/haratsan-sdk/go/gen_pb/bot_apipb;bot_apipb";
+
+service BotApiService {
+  rpc GetUpdates(GetUpdatesRequest) returns (GetUpdatesResponse);
+
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+}
+
+message GetUpdatesRequest {
+  int64 offset = 1;
+  int32 limit = 2;
+}
+
+message BotUpdate {
+  int64 message_id = 1;
+  int64 from_user_id = 2;
+  string content = 3;
+  int64 created_at = 4;
+}
+
+message GetUpdatesResponse {
+  repeated BotUpdate updates = 1;
+}
+
+message SendMessageRequest {
+  int64 to_user_id = 1;
+  string content = 2;
+}
+
+message SendMessageResponse {
+  int64 message_id = 1;
+}
