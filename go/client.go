@@ -68,16 +68,46 @@ func (c *Client) GetUpdates(ctx context.Context, offset int64, limit int32) ([]*
 	return out, nil
 }
 
-func (c *Client) SendMessage(ctx context.Context, toUserId int64, content string) (messageId int64, err error) {
-	resp, err := c.api.SendMessage(ctx, &bot_apipb.SendMessageRequest{
+func (c *Client) SendMessage(ctx context.Context, toUserId int64, content string, replyMarkup *bot_apipb.ReplyMarkup) (messageId int64, err error) {
+	req := &bot_apipb.SendMessageRequest{
 		ToUserId: toUserId,
 		Content:  content,
-	})
+	}
+	if replyMarkup != nil {
+		req.ReplyMarkup = replyMarkup
+	}
+
+	resp, err := c.api.SendMessage(ctx, req)
 	if err != nil {
 		return 0, err
 	}
 
 	return resp.GetMessageId(), nil
+}
+
+type Button struct {
+	Text         string
+	CallbackData string
+}
+
+func BuildReplyMarkup(rows [][]Button) *bot_apipb.ReplyMarkup {
+	protoRows := make([]*bot_apipb.InlineKeyboardRow, 0, len(rows))
+	for _, row := range rows {
+		buttons := make([]*bot_apipb.InlineKeyboardButton, 0, len(row))
+		for _, b := range row {
+			buttons = append(buttons, &bot_apipb.InlineKeyboardButton{
+				Text:         b.Text,
+				CallbackData: b.CallbackData,
+			})
+		}
+		protoRows = append(protoRows, &bot_apipb.InlineKeyboardRow{
+			Buttons: buttons,
+		})
+	}
+
+	return &bot_apipb.ReplyMarkup{
+		InlineKeyboard: protoRows,
+	}
 }
 
 type UpdateHandler func(ctx context.Context, update *Update) error

@@ -26,9 +26,23 @@ message GetUpdatesResponse {
   repeated BotUpdate updates = 1;
 }
 
+message InlineKeyboardButton {
+  string text = 1;
+  string callback_data = 2;
+}
+
+message InlineKeyboardRow {
+  repeated InlineKeyboardButton buttons = 1;
+}
+
+message ReplyMarkup {
+  repeated InlineKeyboardRow inline_keyboard = 1;
+}
+
 message SendMessageRequest {
   int64 to_user_id = 1;
   string content = 2;
+  ReplyMarkup reply_markup = 3;
 }
 
 message SendMessageResponse {

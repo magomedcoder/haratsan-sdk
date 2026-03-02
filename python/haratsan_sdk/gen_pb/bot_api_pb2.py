@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rbot_api.proto\x12\x07\x62ot_api\"2\n\x11GetUpdatesRequest\x12\x0e\n\x06offset\x18\x01 \x01(\x03\x12\r\n\x05limit\x18\x02 \x01(\x05\"Z\n\tBotUpdate\x12\x12\n\nmessage_id\x18\x01 \x01(\x03\x12\x14\n\x0c\x66rom_user_id\x18\x02 \x01(\x03\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\x12\x12\n\ncreated_at\x18\x04 \x01(\x03\"9\n\x12GetUpdatesResponse\x12#\n\x07updates\x18\x01 \x03(\x0b\x32\x12.bot_api.BotUpdate\"9\n\x12SendMessageRequest\x12\x12\n\nto_user_id\x18\x01 \x01(\x03\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\")\n\x13SendMessageResponse\x12\x12\n\nmessage_id\x18\x01 \x01(\x03\x32\xa0\x01\n\rBotApiService\x12\x45\n\nGetUpdates\x12\x1a.bot_api.GetUpdatesRequest\x1a\x1b.bot_api.GetUpdatesResponse\x12H\n\x0bSendMessage\x12\x1b.bot_api.SendMessageRequest\x1a\x1c.bot_api.SendMessageResponseBDZBgithub.com/magomedcoder/haratsan-sdk/go/gen_pb/bot_apipb;bot_apipbb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rbot_api.proto\x12\x07\x62ot_api\"2\n\x11GetUpdatesRequest\x12\x0e\n\x06offset\x18\x01 \x01(\x03\x12\r\n\x05limit\x18\x02 \x01(\x05\"Z\n\tBotUpdate\x12\x12\n\nmessage_id\x18\x01 \x01(\x03\x12\x14\n\x0c\x66rom_user_id\x18\x02 \x01(\x03\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\x12\x12\n\ncreated_at\x18\x04 \x01(\x03\"9\n\x12GetUpdatesResponse\x12#\n\x07updates\x18\x01 \x03(\x0b\x32\x12.bot_api.BotUpdate\";\n\x14InlineKeyboardButton\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\x15\n\rcallback_data\x18\x02 \x01(\t\"C\n\x11InlineKeyboardRow\x12.\n\x07\x62uttons\x18\x01 \x03(\x0b\x32\x1d.bot_api.InlineKeyboardButton\"B\n\x0bReplyMarkup\x12\x33\n\x0finline_keyboard\x18\x01 \x03(\x0b\x32\x1a.bot_api.InlineKeyboardRow\"e\n\x12SendMessageRequest\x12\x12\n\nto_user_id\x18\x01 \x01(\x03\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12*\n\x0creply_markup\x18\x03 \x01(\x0b\x32\x14.bot_api.ReplyMarkup\")\n\x13SendMessageResponse\x12\x12\n\nmessage_id\x18\x01 \x01(\x03\x32\xa0\x01\n\rBotApiService\x12\x45\n\nGetUpdates\x12\x1a.bot_api.GetUpdatesRequest\x1a\x1b.bot_api.GetUpdatesResponse\x12H\n\x0bSendMessage\x12\x1b.bot_api.SendMessageRequest\x1a\x1c.bot_api.SendMessageResponseBDZBgithub.com/magomedcoder/haratsan-sdk/go/gen_pb/bot_apipb;bot_apipbb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -38,10 +38,16 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_BOTUPDATE']._serialized_end=168
   _globals['_GETUPDATESRESPONSE']._serialized_start=170
   _globals['_GETUPDATESRESPONSE']._serialized_end=227
-  _globals['_SENDMESSAGEREQUEST']._serialized_start=229
-  _globals['_SENDMESSAGEREQUEST']._serialized_end=286
-  _globals['_SENDMESSAGERESPONSE']._serialized_start=288
-  _globals['_SENDMESSAGERESPONSE']._serialized_end=329
-  _globals['_BOTAPISERVICE']._serialized_start=332
-  _globals['_BOTAPISERVICE']._serialized_end=492
+  _globals['_INLINEKEYBOARDBUTTON']._serialized_start=229
+  _globals['_INLINEKEYBOARDBUTTON']._serialized_end=288
+  _globals['_INLINEKEYBOARDROW']._serialized_start=290
+  _globals['_INLINEKEYBOARDROW']._serialized_end=357
+  _globals['_REPLYMARKUP']._serialized_start=359
+  _globals['_REPLYMARKUP']._serialized_end=425
+  _globals['_SENDMESSAGEREQUEST']._serialized_start=427
+  _globals['_SENDMESSAGEREQUEST']._serialized_end=528
+  _globals['_SENDMESSAGERESPONSE']._serialized_start=530
+  _globals['_SENDMESSAGERESPONSE']._serialized_end=571
+  _globals['_BOTAPISERVICE']._serialized_start=574
+  _globals['_BOTAPISERVICE']._serialized_end=734
 # @@protoc_insertion_point(module_scope)

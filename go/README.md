@@ -27,12 +27,36 @@ func main() {
 	defer client.Close()
 
 	handler := func(ctx context.Context, update *haratsansdk.Update) error {
-		_, err := client.SendMessage(ctx, update.FromUserId, "Ответ")
+		_, err := client.SendMessage(ctx, update.FromUserId, "Ответ", nil)
 		return err
 	}
 
 	client.RunPolling(context.Background(), handler)
 }
+```
+
+### Inline-клавиатура (ReplyMarkup)
+
+```go
+markup := haratsansdk.BuildReplyMarkup([][]haratsansdk.Button{
+	{
+		{
+			Text: "Да",
+			CallbackData: "vote_yes"б
+		}, 
+		{
+			Text: "Нет",
+			CallbackData: "vote_no"б
+		},
+	},
+	{
+		{
+			Text: "Отмена",
+			CallbackData: "cancel"б
+		},
+	},
+})
+client.SendMessage(ctx, toUserId, "Голосуйте:", markup)
 ```
 
 **Пример использования:** [`example/main.go`](example/main.go)

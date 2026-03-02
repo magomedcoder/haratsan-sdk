@@ -9,6 +9,10 @@ import grpc
 
 from .gen_pb import bot_api_pb2, bot_api_pb2_grpc
 
+ReplyMarkup = bot_api_pb2.ReplyMarkup
+InlineKeyboardRow = bot_api_pb2.InlineKeyboardRow
+InlineKeyboardButton = bot_api_pb2.InlineKeyboardButton
+
 DEFAULT_POLL_INTERVAL = 2.0
 DEFAULT_UPDATES_LIMIT = 50
 
@@ -74,14 +78,34 @@ class Client:
         self,
         to_user_id: int,
         content: str,
+        reply_markup: Optional[bot_api_pb2.ReplyMarkup] = None,
         timeout: Optional[float] = None,
     ) -> int:
-        req = bot_api_pb2.SendMessageRequest(to_user_id=to_user_id, content=content)
+        req = bot_api_pb2.SendMessageRequest(
+            to_user_id=to_user_id,
+            content=content,
+            reply_markup=reply_markup,
+        )
         kwargs = {}
         if timeout is not None:
             kwargs["timeout"] = timeout
         resp = self._stub.SendMessage(req, **kwargs)
+
         return resp.message_id
+
+
+def build_reply_markup(
+    rows: list[list[tuple[str, str]]],
+) -> bot_api_pb2.ReplyMarkup:
+    proto_rows = []
+    for row in rows:
+        buttons = [
+            bot_api_pb2.InlineKeyboardButton(text=t, callback_data=cd)
+            for t, cd in row
+        ]
+        proto_rows.append(bot_api_pb2.InlineKeyboardRow(buttons=buttons))
+
+    return bot_api_pb2.ReplyMarkup(inline_keyboard=proto_rows)
 
 
 UpdateHandler = Callable[[Update], None]

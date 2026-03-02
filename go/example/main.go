@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/magomedcoder/haratsan-sdk/go"
+	haratsansdk "github.com/magomedcoder/haratsan-sdk/go"
 )
 
 func main() {
@@ -25,25 +25,75 @@ func main() {
 	handler := func(ctx context.Context, update *haratsansdk.Update) error {
 		content := strings.TrimSpace(update.Content)
 
-		var reply string
 		switch {
 		case content == "/start":
-			reply = "Привет, я пример бота"
-		case content == "/time":
-			reply = fmt.Sprintf("Сейчас время %s", time.Now())
-		default:
-			reply = content
-		}
-
-		messageId, err := client.SendMessage(ctx, update.FromUserId, reply)
-		if err != nil {
-			log.Printf("SendMessage: %v", err)
+			_, err := client.SendMessage(ctx, update.FromUserId, "Привет, я пример бота", nil)
 			return err
+
+		case content == "/time":
+			reply := fmt.Sprintf("Сейчас время %s", time.Now())
+			messageId, err := client.SendMessage(ctx, update.FromUserId, reply, nil)
+			if err != nil {
+				return err
+			}
+			log.Printf("Ответ пользователю %d (message_id=%d): %q", update.FromUserId, messageId, reply)
+
+			return nil
+
+		case content == "/vote":
+			markup := haratsansdk.BuildReplyMarkup([][]haratsansdk.Button{
+				{
+					{
+						Text: "Да",
+						CallbackData: "vote_yes",
+					},
+					{
+						Text: "Нет",
+						CallbackData: "vote_no",
+					},
+				},
+			})
+			_, err := client.SendMessage(ctx, update.FromUserId, "Голосуйте:", markup)
+			if err != nil {
+				return err
+			}
+			log.Printf("Отправлено сообщение с кнопками пользователю %d", update.FromUserId)
+
+			return nil
+
+		case content == "/menu":
+			markup := haratsansdk.BuildReplyMarkup([][]haratsansdk.Button{
+				{
+					{
+						Text: "Справка",
+						CallbackData: "help",
+					},
+					{
+						Text: "Время",
+						CallbackData: "time",
+					},
+				},
+				{
+					{
+						Text: "Отмена",
+						CallbackData: "cancel",
+					},
+				},
+			})
+			_, err := client.SendMessage(ctx, update.FromUserId, "Выберите действие:", markup)
+
+			return err
+
+		default:
+			messageId, err := client.SendMessage(ctx, update.FromUserId, content, nil)
+			if err != nil {
+				log.Printf("SendMessage: %v", err)
+				return err
+			}
+			log.Printf("Ответ пользователю %d (message_id=%d): %q", update.FromUserId, messageId, content)
+
+			return nil
 		}
-
-		log.Printf("Ответ пользователю %d (message_id=%d, sent_id=%d): %q", update.FromUserId, update.MessageId, messageId, reply)
-
-		return nil
 	}
 
 	client.RunPolling(ctx, handler)

@@ -23,4 +23,31 @@ def handler(update: Update) -> None:
 run_polling(client, handler)
 ```
 
+### Inline-клавиатура (ReplyMarkup)
+
+```python
+from haratsan_sdk import Client, build_reply_markup
+
+client = Client(addr="хост", token="токен")
+
+markup = build_reply_markup([
+    [
+        ("Да", "vote_yes"), 
+        ("Нет", "vote_no"),
+    ],
+])
+client.send_message(user_id, "Голосуйте:", reply_markup=markup)
+
+markup = build_reply_markup([
+    [
+        ("Справка", "help"), 
+        ("Время", "time")
+    ],
+    [
+        ("Отмена", "cancel")
+    ],
+])
+client.send_message(user_id, "Выберите:", reply_markup=markup)
+```
+
 **Пример использования:** [`example/main.py`](example/main.py)

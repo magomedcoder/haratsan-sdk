@@ -185,17 +185,158 @@ func (x *GetUpdatesResponse) GetUpdates() []*BotUpdate {
 	return nil
 }
 
+type InlineKeyboardButton struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Text          string                 `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
+	CallbackData  string                 `protobuf:"bytes,2,opt,name=callback_data,json=callbackData,proto3" json:"callback_data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InlineKeyboardButton) Reset() {
+	*x = InlineKeyboardButton{}
+	mi := &file_bot_api_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InlineKeyboardButton) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InlineKeyboardButton) ProtoMessage() {}
+
+func (x *InlineKeyboardButton) ProtoReflect() protoreflect.Message {
+	mi := &file_bot_api_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InlineKeyboardButton.ProtoReflect.Descriptor instead.
+func (*InlineKeyboardButton) Descriptor() ([]byte, []int) {
+	return file_bot_api_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *InlineKeyboardButton) GetText() string {
+	if x != nil {
+		return x.Text
+	}
+	return ""
+}
+
+func (x *InlineKeyboardButton) GetCallbackData() string {
+	if x != nil {
+		return x.CallbackData
+	}
+	return ""
+}
+
+type InlineKeyboardRow struct {
+	state         protoimpl.MessageState  `protogen:"open.v1"`
+	Buttons       []*InlineKeyboardButton `protobuf:"bytes,1,rep,name=buttons,proto3" json:"buttons,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InlineKeyboardRow) Reset() {
+	*x = InlineKeyboardRow{}
+	mi := &file_bot_api_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InlineKeyboardRow) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InlineKeyboardRow) ProtoMessage() {}
+
+func (x *InlineKeyboardRow) ProtoReflect() protoreflect.Message {
+	mi := &file_bot_api_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InlineKeyboardRow.ProtoReflect.Descriptor instead.
+func (*InlineKeyboardRow) Descriptor() ([]byte, []int) {
+	return file_bot_api_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *InlineKeyboardRow) GetButtons() []*InlineKeyboardButton {
+	if x != nil {
+		return x.Buttons
+	}
+	return nil
+}
+
+type ReplyMarkup struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	InlineKeyboard []*InlineKeyboardRow   `protobuf:"bytes,1,rep,name=inline_keyboard,json=inlineKeyboard,proto3" json:"inline_keyboard,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *ReplyMarkup) Reset() {
+	*x = ReplyMarkup{}
+	mi := &file_bot_api_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReplyMarkup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReplyMarkup) ProtoMessage() {}
+
+func (x *ReplyMarkup) ProtoReflect() protoreflect.Message {
+	mi := &file_bot_api_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReplyMarkup.ProtoReflect.Descriptor instead.
+func (*ReplyMarkup) Descriptor() ([]byte, []int) {
+	return file_bot_api_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ReplyMarkup) GetInlineKeyboard() []*InlineKeyboardRow {
+	if x != nil {
+		return x.InlineKeyboard
+	}
+	return nil
+}
+
 type SendMessageRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ToUserId      int64                  `protobuf:"varint,1,opt,name=to_user_id,json=toUserId,proto3" json:"to_user_id,omitempty"`
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+	ReplyMarkup   *ReplyMarkup           `protobuf:"bytes,3,opt,name=reply_markup,json=replyMarkup,proto3" json:"reply_markup,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *SendMessageRequest) Reset() {
 	*x = SendMessageRequest{}
-	mi := &file_bot_api_proto_msgTypes[3]
+	mi := &file_bot_api_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -207,7 +348,7 @@ func (x *SendMessageRequest) String() string {
 func (*SendMessageRequest) ProtoMessage() {}
 
 func (x *SendMessageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_bot_api_proto_msgTypes[3]
+	mi := &file_bot_api_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -220,7 +361,7 @@ func (x *SendMessageRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendMessageRequest.ProtoReflect.Descriptor instead.
 func (*SendMessageRequest) Descriptor() ([]byte, []int) {
-	return file_bot_api_proto_rawDescGZIP(), []int{3}
+	return file_bot_api_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *SendMessageRequest) GetToUserId() int64 {
@@ -237,6 +378,13 @@ func (x *SendMessageRequest) GetContent() string {
 	return ""
 }
 
+func (x *SendMessageRequest) GetReplyMarkup() *ReplyMarkup {
+	if x != nil {
+		return x.ReplyMarkup
+	}
+	return nil
+}
+
 type SendMessageResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	MessageId     int64                  `protobuf:"varint,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
@@ -246,7 +394,7 @@ type SendMessageResponse struct {
 
 func (x *SendMessageResponse) Reset() {
 	*x = SendMessageResponse{}
-	mi := &file_bot_api_proto_msgTypes[4]
+	mi := &file_bot_api_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -258,7 +406,7 @@ func (x *SendMessageResponse) String() string {
 func (*SendMessageResponse) ProtoMessage() {}
 
 func (x *SendMessageResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_bot_api_proto_msgTypes[4]
+	mi := &file_bot_api_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -271,7 +419,7 @@ func (x *SendMessageResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendMessageResponse.ProtoReflect.Descriptor instead.
 func (*SendMessageResponse) Descriptor() ([]byte, []int) {
-	return file_bot_api_proto_rawDescGZIP(), []int{4}
+	return file_bot_api_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *SendMessageResponse) GetMessageId() int64 {
@@ -298,11 +446,19 @@ const file_bot_api_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x04 \x01(\x03R\tcreatedAt\"B\n" +
 	"\x12GetUpdatesResponse\x12,\n" +
-	"\aupdates\x18\x01 \x03(\v2\x12.bot_api.BotUpdateR\aupdates\"L\n" +
+	"\aupdates\x18\x01 \x03(\v2\x12.bot_api.BotUpdateR\aupdates\"O\n" +
+	"\x14InlineKeyboardButton\x12\x12\n" +
+	"\x04text\x18\x01 \x01(\tR\x04text\x12#\n" +
+	"\rcallback_data\x18\x02 \x01(\tR\fcallbackData\"L\n" +
+	"\x11InlineKeyboardRow\x127\n" +
+	"\abuttons\x18\x01 \x03(\v2\x1d.bot_api.InlineKeyboardButtonR\abuttons\"R\n" +
+	"\vReplyMarkup\x12C\n" +
+	"\x0finline_keyboard\x18\x01 \x03(\v2\x1a.bot_api.InlineKeyboardRowR\x0einlineKeyboard\"\x85\x01\n" +
 	"\x12SendMessageRequest\x12\x1c\n" +
 	"\n" +
 	"to_user_id\x18\x01 \x01(\x03R\btoUserId\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\"4\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x127\n" +
+	"\freply_markup\x18\x03 \x01(\v2\x14.bot_api.ReplyMarkupR\vreplyMarkup\"4\n" +
 	"\x13SendMessageResponse\x12\x1d\n" +
 	"\n" +
 	"message_id\x18\x01 \x01(\x03R\tmessageId2\xa0\x01\n" +
@@ -323,25 +479,31 @@ func file_bot_api_proto_rawDescGZIP() []byte {
 	return file_bot_api_proto_rawDescData
 }
 
-var file_bot_api_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_bot_api_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_bot_api_proto_goTypes = []any{
-	(*GetUpdatesRequest)(nil),   // 0: bot_api.GetUpdatesRequest
-	(*BotUpdate)(nil),           // 1: bot_api.BotUpdate
-	(*GetUpdatesResponse)(nil),  // 2: bot_api.GetUpdatesResponse
-	(*SendMessageRequest)(nil),  // 3: bot_api.SendMessageRequest
-	(*SendMessageResponse)(nil), // 4: bot_api.SendMessageResponse
+	(*GetUpdatesRequest)(nil),    // 0: bot_api.GetUpdatesRequest
+	(*BotUpdate)(nil),            // 1: bot_api.BotUpdate
+	(*GetUpdatesResponse)(nil),   // 2: bot_api.GetUpdatesResponse
+	(*InlineKeyboardButton)(nil), // 3: bot_api.InlineKeyboardButton
+	(*InlineKeyboardRow)(nil),    // 4: bot_api.InlineKeyboardRow
+	(*ReplyMarkup)(nil),          // 5: bot_api.ReplyMarkup
+	(*SendMessageRequest)(nil),   // 6: bot_api.SendMessageRequest
+	(*SendMessageResponse)(nil),  // 7: bot_api.SendMessageResponse
 }
 var file_bot_api_proto_depIdxs = []int32{
 	1, // 0: bot_api.GetUpdatesResponse.updates:type_name -> bot_api.BotUpdate
-	0, // 1: bot_api.BotApiService.GetUpdates:input_type -> bot_api.GetUpdatesRequest
-	3, // 2: bot_api.BotApiService.SendMessage:input_type -> bot_api.SendMessageRequest
-	2, // 3: bot_api.BotApiService.GetUpdates:output_type -> bot_api.GetUpdatesResponse
-	4, // 4: bot_api.BotApiService.SendMessage:output_type -> bot_api.SendMessageResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	3, // 1: bot_api.InlineKeyboardRow.buttons:type_name -> bot_api.InlineKeyboardButton
+	4, // 2: bot_api.ReplyMarkup.inline_keyboard:type_name -> bot_api.InlineKeyboardRow
+	5, // 3: bot_api.SendMessageRequest.reply_markup:type_name -> bot_api.ReplyMarkup
+	0, // 4: bot_api.BotApiService.GetUpdates:input_type -> bot_api.GetUpdatesRequest
+	6, // 5: bot_api.BotApiService.SendMessage:input_type -> bot_api.SendMessageRequest
+	2, // 6: bot_api.BotApiService.GetUpdates:output_type -> bot_api.GetUpdatesResponse
+	7, // 7: bot_api.BotApiService.SendMessage:output_type -> bot_api.SendMessageResponse
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_bot_api_proto_init() }
@@ -355,7 +517,7 @@ func file_bot_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_bot_api_proto_rawDesc), len(file_bot_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
