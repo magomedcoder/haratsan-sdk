@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "haratsan-sdk"
+version = "0.1.0"
+description = "SDK для работы с бот-API Haratsan."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "grpcio>=1.60.0",
+    "protobuf>=4.25.0",
+]
+
+[project.optional-dependencies]
+dev = ["grpcio-tools"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["haratsan_sdk*"]
