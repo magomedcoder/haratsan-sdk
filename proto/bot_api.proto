@@ -13,6 +13,7 @@ service BotApiService {
 message GetUpdatesRequest {
   int64 offset = 1;
   int32 limit = 2;
+  int64 callback_offset = 3;
 }
 
 message BotUpdate {
@@ -22,8 +23,17 @@ message BotUpdate {
   int64 created_at = 4;
 }
 
+message BotCallbackQuery {
+  int64 id = 1;
+  int64 from_user_id = 2;
+  int64 message_id = 3;
+  string callback_data = 4;
+  int64 created_at = 5;
+}
+
 message GetUpdatesResponse {
   repeated BotUpdate updates = 1;
+  repeated BotCallbackQuery callback_queries = 2;
 }
 
 message InlineKeyboardButton {

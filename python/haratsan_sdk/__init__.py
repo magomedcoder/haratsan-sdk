@@ -1,7 +1,9 @@
 from .client import (
     Client,
     Update,
+    CallbackQuery,
     UpdateHandler,
+    CallbackQueryHandler,
     run_polling,
     build_reply_markup,
     ReplyMarkup,
@@ -14,7 +16,9 @@ from .client import (
 __all__ = [
     "Client",
     "Update",
+    "CallbackQuery",
     "UpdateHandler",
+    "CallbackQueryHandler",
     "run_polling",
     "build_reply_markup",
     "ReplyMarkup",

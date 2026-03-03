@@ -22,11 +22,12 @@ const (
 )
 
 type GetUpdatesRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Offset        int64                  `protobuf:"varint,1,opt,name=offset,proto3" json:"offset,omitempty"`
-	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Offset         int64                  `protobuf:"varint,1,opt,name=offset,proto3" json:"offset,omitempty"`
+	Limit          int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	CallbackOffset int64                  `protobuf:"varint,3,opt,name=callback_offset,json=callbackOffset,proto3" json:"callback_offset,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *GetUpdatesRequest) Reset() {
@@ -69,6 +70,13 @@ func (x *GetUpdatesRequest) GetOffset() int64 {
 func (x *GetUpdatesRequest) GetLimit() int32 {
 	if x != nil {
 		return x.Limit
+	}
+	return 0
+}
+
+func (x *GetUpdatesRequest) GetCallbackOffset() int64 {
+	if x != nil {
+		return x.CallbackOffset
 	}
 	return 0
 }
@@ -141,16 +149,93 @@ func (x *BotUpdate) GetCreatedAt() int64 {
 	return 0
 }
 
-type GetUpdatesResponse struct {
+type BotCallbackQuery struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Updates       []*BotUpdate           `protobuf:"bytes,1,rep,name=updates,proto3" json:"updates,omitempty"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	FromUserId    int64                  `protobuf:"varint,2,opt,name=from_user_id,json=fromUserId,proto3" json:"from_user_id,omitempty"`
+	MessageId     int64                  `protobuf:"varint,3,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
+	CallbackData  string                 `protobuf:"bytes,4,opt,name=callback_data,json=callbackData,proto3" json:"callback_data,omitempty"`
+	CreatedAt     int64                  `protobuf:"varint,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
+func (x *BotCallbackQuery) Reset() {
+	*x = BotCallbackQuery{}
+	mi := &file_bot_api_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BotCallbackQuery) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BotCallbackQuery) ProtoMessage() {}
+
+func (x *BotCallbackQuery) ProtoReflect() protoreflect.Message {
+	mi := &file_bot_api_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BotCallbackQuery.ProtoReflect.Descriptor instead.
+func (*BotCallbackQuery) Descriptor() ([]byte, []int) {
+	return file_bot_api_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *BotCallbackQuery) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *BotCallbackQuery) GetFromUserId() int64 {
+	if x != nil {
+		return x.FromUserId
+	}
+	return 0
+}
+
+func (x *BotCallbackQuery) GetMessageId() int64 {
+	if x != nil {
+		return x.MessageId
+	}
+	return 0
+}
+
+func (x *BotCallbackQuery) GetCallbackData() string {
+	if x != nil {
+		return x.CallbackData
+	}
+	return ""
+}
+
+func (x *BotCallbackQuery) GetCreatedAt() int64 {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return 0
+}
+
+type GetUpdatesResponse struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Updates         []*BotUpdate           `protobuf:"bytes,1,rep,name=updates,proto3" json:"updates,omitempty"`
+	CallbackQueries []*BotCallbackQuery    `protobuf:"bytes,2,rep,name=callback_queries,json=callbackQueries,proto3" json:"callback_queries,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
 func (x *GetUpdatesResponse) Reset() {
 	*x = GetUpdatesResponse{}
-	mi := &file_bot_api_proto_msgTypes[2]
+	mi := &file_bot_api_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -162,7 +247,7 @@ func (x *GetUpdatesResponse) String() string {
 func (*GetUpdatesResponse) ProtoMessage() {}
 
 func (x *GetUpdatesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_bot_api_proto_msgTypes[2]
+	mi := &file_bot_api_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -175,12 +260,19 @@ func (x *GetUpdatesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUpdatesResponse.ProtoReflect.Descriptor instead.
 func (*GetUpdatesResponse) Descriptor() ([]byte, []int) {
-	return file_bot_api_proto_rawDescGZIP(), []int{2}
+	return file_bot_api_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetUpdatesResponse) GetUpdates() []*BotUpdate {
 	if x != nil {
 		return x.Updates
+	}
+	return nil
+}
+
+func (x *GetUpdatesResponse) GetCallbackQueries() []*BotCallbackQuery {
+	if x != nil {
+		return x.CallbackQueries
 	}
 	return nil
 }
@@ -195,7 +287,7 @@ type InlineKeyboardButton struct {
 
 func (x *InlineKeyboardButton) Reset() {
 	*x = InlineKeyboardButton{}
-	mi := &file_bot_api_proto_msgTypes[3]
+	mi := &file_bot_api_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -207,7 +299,7 @@ func (x *InlineKeyboardButton) String() string {
 func (*InlineKeyboardButton) ProtoMessage() {}
 
 func (x *InlineKeyboardButton) ProtoReflect() protoreflect.Message {
-	mi := &file_bot_api_proto_msgTypes[3]
+	mi := &file_bot_api_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -220,7 +312,7 @@ func (x *InlineKeyboardButton) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InlineKeyboardButton.ProtoReflect.Descriptor instead.
 func (*InlineKeyboardButton) Descriptor() ([]byte, []int) {
-	return file_bot_api_proto_rawDescGZIP(), []int{3}
+	return file_bot_api_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *InlineKeyboardButton) GetText() string {
@@ -246,7 +338,7 @@ type InlineKeyboardRow struct {
 
 func (x *InlineKeyboardRow) Reset() {
 	*x = InlineKeyboardRow{}
-	mi := &file_bot_api_proto_msgTypes[4]
+	mi := &file_bot_api_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -258,7 +350,7 @@ func (x *InlineKeyboardRow) String() string {
 func (*InlineKeyboardRow) ProtoMessage() {}
 
 func (x *InlineKeyboardRow) ProtoReflect() protoreflect.Message {
-	mi := &file_bot_api_proto_msgTypes[4]
+	mi := &file_bot_api_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -271,7 +363,7 @@ func (x *InlineKeyboardRow) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InlineKeyboardRow.ProtoReflect.Descriptor instead.
 func (*InlineKeyboardRow) Descriptor() ([]byte, []int) {
-	return file_bot_api_proto_rawDescGZIP(), []int{4}
+	return file_bot_api_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *InlineKeyboardRow) GetButtons() []*InlineKeyboardButton {
@@ -290,7 +382,7 @@ type ReplyMarkup struct {
 
 func (x *ReplyMarkup) Reset() {
 	*x = ReplyMarkup{}
-	mi := &file_bot_api_proto_msgTypes[5]
+	mi := &file_bot_api_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -302,7 +394,7 @@ func (x *ReplyMarkup) String() string {
 func (*ReplyMarkup) ProtoMessage() {}
 
 func (x *ReplyMarkup) ProtoReflect() protoreflect.Message {
-	mi := &file_bot_api_proto_msgTypes[5]
+	mi := &file_bot_api_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -315,7 +407,7 @@ func (x *ReplyMarkup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReplyMarkup.ProtoReflect.Descriptor instead.
 func (*ReplyMarkup) Descriptor() ([]byte, []int) {
-	return file_bot_api_proto_rawDescGZIP(), []int{5}
+	return file_bot_api_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ReplyMarkup) GetInlineKeyboard() []*InlineKeyboardRow {
@@ -336,7 +428,7 @@ type SendMessageRequest struct {
 
 func (x *SendMessageRequest) Reset() {
 	*x = SendMessageRequest{}
-	mi := &file_bot_api_proto_msgTypes[6]
+	mi := &file_bot_api_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -348,7 +440,7 @@ func (x *SendMessageRequest) String() string {
 func (*SendMessageRequest) ProtoMessage() {}
 
 func (x *SendMessageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_bot_api_proto_msgTypes[6]
+	mi := &file_bot_api_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -361,7 +453,7 @@ func (x *SendMessageRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendMessageRequest.ProtoReflect.Descriptor instead.
 func (*SendMessageRequest) Descriptor() ([]byte, []int) {
-	return file_bot_api_proto_rawDescGZIP(), []int{6}
+	return file_bot_api_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *SendMessageRequest) GetToUserId() int64 {
@@ -394,7 +486,7 @@ type SendMessageResponse struct {
 
 func (x *SendMessageResponse) Reset() {
 	*x = SendMessageResponse{}
-	mi := &file_bot_api_proto_msgTypes[7]
+	mi := &file_bot_api_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -406,7 +498,7 @@ func (x *SendMessageResponse) String() string {
 func (*SendMessageResponse) ProtoMessage() {}
 
 func (x *SendMessageResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_bot_api_proto_msgTypes[7]
+	mi := &file_bot_api_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -419,7 +511,7 @@ func (x *SendMessageResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendMessageResponse.ProtoReflect.Descriptor instead.
 func (*SendMessageResponse) Descriptor() ([]byte, []int) {
-	return file_bot_api_proto_rawDescGZIP(), []int{7}
+	return file_bot_api_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *SendMessageResponse) GetMessageId() int64 {
@@ -433,10 +525,11 @@ var File_bot_api_proto protoreflect.FileDescriptor
 
 const file_bot_api_proto_rawDesc = "" +
 	"\n" +
-	"\rbot_api.proto\x12\abot_api\"A\n" +
+	"\rbot_api.proto\x12\abot_api\"j\n" +
 	"\x11GetUpdatesRequest\x12\x16\n" +
 	"\x06offset\x18\x01 \x01(\x03R\x06offset\x12\x14\n" +
-	"\x05limit\x18\x02 \x01(\x05R\x05limit\"\x85\x01\n" +
+	"\x05limit\x18\x02 \x01(\x05R\x05limit\x12'\n" +
+	"\x0fcallback_offset\x18\x03 \x01(\x03R\x0ecallbackOffset\"\x85\x01\n" +
 	"\tBotUpdate\x12\x1d\n" +
 	"\n" +
 	"message_id\x18\x01 \x01(\x03R\tmessageId\x12 \n" +
@@ -444,9 +537,19 @@ const file_bot_api_proto_rawDesc = "" +
 	"fromUserId\x12\x18\n" +
 	"\acontent\x18\x03 \x01(\tR\acontent\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\x04 \x01(\x03R\tcreatedAt\"B\n" +
+	"created_at\x18\x04 \x01(\x03R\tcreatedAt\"\xa7\x01\n" +
+	"\x10BotCallbackQuery\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12 \n" +
+	"\ffrom_user_id\x18\x02 \x01(\x03R\n" +
+	"fromUserId\x12\x1d\n" +
+	"\n" +
+	"message_id\x18\x03 \x01(\x03R\tmessageId\x12#\n" +
+	"\rcallback_data\x18\x04 \x01(\tR\fcallbackData\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x05 \x01(\x03R\tcreatedAt\"\x88\x01\n" +
 	"\x12GetUpdatesResponse\x12,\n" +
-	"\aupdates\x18\x01 \x03(\v2\x12.bot_api.BotUpdateR\aupdates\"O\n" +
+	"\aupdates\x18\x01 \x03(\v2\x12.bot_api.BotUpdateR\aupdates\x12D\n" +
+	"\x10callback_queries\x18\x02 \x03(\v2\x19.bot_api.BotCallbackQueryR\x0fcallbackQueries\"O\n" +
 	"\x14InlineKeyboardButton\x12\x12\n" +
 	"\x04text\x18\x01 \x01(\tR\x04text\x12#\n" +
 	"\rcallback_data\x18\x02 \x01(\tR\fcallbackData\"L\n" +
@@ -479,31 +582,33 @@ func file_bot_api_proto_rawDescGZIP() []byte {
 	return file_bot_api_proto_rawDescData
 }
 
-var file_bot_api_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_bot_api_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_bot_api_proto_goTypes = []any{
 	(*GetUpdatesRequest)(nil),    // 0: bot_api.GetUpdatesRequest
 	(*BotUpdate)(nil),            // 1: bot_api.BotUpdate
-	(*GetUpdatesResponse)(nil),   // 2: bot_api.GetUpdatesResponse
-	(*InlineKeyboardButton)(nil), // 3: bot_api.InlineKeyboardButton
-	(*InlineKeyboardRow)(nil),    // 4: bot_api.InlineKeyboardRow
-	(*ReplyMarkup)(nil),          // 5: bot_api.ReplyMarkup
-	(*SendMessageRequest)(nil),   // 6: bot_api.SendMessageRequest
-	(*SendMessageResponse)(nil),  // 7: bot_api.SendMessageResponse
+	(*BotCallbackQuery)(nil),     // 2: bot_api.BotCallbackQuery
+	(*GetUpdatesResponse)(nil),   // 3: bot_api.GetUpdatesResponse
+	(*InlineKeyboardButton)(nil), // 4: bot_api.InlineKeyboardButton
+	(*InlineKeyboardRow)(nil),    // 5: bot_api.InlineKeyboardRow
+	(*ReplyMarkup)(nil),          // 6: bot_api.ReplyMarkup
+	(*SendMessageRequest)(nil),   // 7: bot_api.SendMessageRequest
+	(*SendMessageResponse)(nil),  // 8: bot_api.SendMessageResponse
 }
 var file_bot_api_proto_depIdxs = []int32{
 	1, // 0: bot_api.GetUpdatesResponse.updates:type_name -> bot_api.BotUpdate
-	3, // 1: bot_api.InlineKeyboardRow.buttons:type_name -> bot_api.InlineKeyboardButton
-	4, // 2: bot_api.ReplyMarkup.inline_keyboard:type_name -> bot_api.InlineKeyboardRow
-	5, // 3: bot_api.SendMessageRequest.reply_markup:type_name -> bot_api.ReplyMarkup
-	0, // 4: bot_api.BotApiService.GetUpdates:input_type -> bot_api.GetUpdatesRequest
-	6, // 5: bot_api.BotApiService.SendMessage:input_type -> bot_api.SendMessageRequest
-	2, // 6: bot_api.BotApiService.GetUpdates:output_type -> bot_api.GetUpdatesResponse
-	7, // 7: bot_api.BotApiService.SendMessage:output_type -> bot_api.SendMessageResponse
-	6, // [6:8] is the sub-list for method output_type
-	4, // [4:6] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	2, // 1: bot_api.GetUpdatesResponse.callback_queries:type_name -> bot_api.BotCallbackQuery
+	4, // 2: bot_api.InlineKeyboardRow.buttons:type_name -> bot_api.InlineKeyboardButton
+	5, // 3: bot_api.ReplyMarkup.inline_keyboard:type_name -> bot_api.InlineKeyboardRow
+	6, // 4: bot_api.SendMessageRequest.reply_markup:type_name -> bot_api.ReplyMarkup
+	0, // 5: bot_api.BotApiService.GetUpdates:input_type -> bot_api.GetUpdatesRequest
+	7, // 6: bot_api.BotApiService.SendMessage:input_type -> bot_api.SendMessageRequest
+	3, // 7: bot_api.BotApiService.GetUpdates:output_type -> bot_api.GetUpdatesResponse
+	8, // 8: bot_api.BotApiService.SendMessage:output_type -> bot_api.SendMessageResponse
+	7, // [7:9] is the sub-list for method output_type
+	5, // [5:7] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_bot_api_proto_init() }
@@ -517,7 +622,7 @@ func file_bot_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_bot_api_proto_rawDesc), len(file_bot_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

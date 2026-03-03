@@ -50,4 +50,17 @@ markup = build_reply_markup([
 client.send_message(user_id, "Выберите:", reply_markup=markup)
 ```
 
+### Обработка нажатий кнопок (CallbackQuery)
+
+Когда пользователь нажимает inline-кнопку, бот получает `CallbackQuery`
+
+```python
+from haratsan_sdk import CallbackQuery
+
+def callback_handler(cb: CallbackQuery) -> None:
+    client.send_message(cb.from_user_id, f"Нажато: {cb.callback_data}")
+
+run_polling(client, handler, callback_handler=callback_handler)
+```
+
 **Пример использования:** [`example/main.py`](example/main.py)

@@ -81,7 +81,6 @@ func main() {
 				},
 			})
 			_, err := client.SendMessage(ctx, update.FromUserId, "Выберите действие:", markup)
-
 			return err
 
 		default:
@@ -96,5 +95,31 @@ func main() {
 		}
 	}
 
-	client.RunPolling(ctx, handler)
+	callbackHandler := func(ctx context.Context, cb *haratsansdk.CallbackQuery) error {
+		var reply string
+		switch cb.CallbackData {
+		case "vote_yes":
+			reply = "Вы проголосовали: Да"
+		case "vote_no":
+			reply = "Вы проголосовали: Нет"
+		case "help":
+			reply = "Справка: /start, /time, /vote, /menu"
+		case "time":
+			reply = fmt.Sprintf("Сейчас время: %s", time.Now().Format(time.RFC3339))
+		case "cancel":
+			reply = "Действие отменено"
+		default:
+			reply = "Нажато: " + cb.CallbackData
+		}
+		_, err := client.SendMessage(ctx, cb.FromUserId, reply, nil)
+		if err != nil {
+			log.Printf("SendMessage (callback): %v", err)
+			return err
+		}
+		log.Printf("CallbackQuery от пользователя %d (message_id=%d, data=%q): %s", cb.FromUserId, cb.MessageId, cb.CallbackData, reply)
+
+		return nil
+	}
+
+	client.RunPolling(ctx, handler, haratsansdk.WithCallbackHandler(callbackHandler))
 }

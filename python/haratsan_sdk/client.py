@@ -25,6 +25,15 @@ class Update:
     created_at: int
 
 
+@dataclass
+class CallbackQuery:
+    id: int
+    from_user_id: int
+    message_id: int
+    callback_data: str
+    created_at: int
+
+
 class _BotTokenInterceptor(grpc.UnaryUnaryClientInterceptor):
     def __init__(self, token: str):
         self._token = token
@@ -57,14 +66,19 @@ class Client:
         self,
         offset: int,
         limit: int,
+        callback_offset: int = 0,
         timeout: Optional[float] = None,
-    ) -> list[Update]:
-        req = bot_api_pb2.GetUpdatesRequest(offset=offset, limit=limit)
+    ) -> tuple[list[Update], list[CallbackQuery]]:
+        req = bot_api_pb2.GetUpdatesRequest(
+            offset=offset,
+            limit=limit,
+            callback_offset=callback_offset,
+        )
         kwargs = {}
         if timeout is not None:
             kwargs["timeout"] = timeout
         resp = self._stub.GetUpdates(req, **kwargs)
-        return [
+        updates = [
             Update(
                 message_id=u.message_id,
                 from_user_id=u.from_user_id,
@@ -73,6 +87,18 @@ class Client:
             )
             for u in resp.updates
         ]
+        callbacks = [
+            CallbackQuery(
+                id=cb.id,
+                from_user_id=cb.from_user_id,
+                message_id=cb.message_id,
+                callback_data=cb.callback_data,
+                created_at=cb.created_at,
+            )
+            for cb in resp.callback_queries
+        ]
+
+        return updates, callbacks
 
     def send_message(
         self,
@@ -109,12 +135,14 @@ def build_reply_markup(
 
 
 UpdateHandler = Callable[[Update], None]
+CallbackQueryHandler = Callable[[CallbackQuery], None]
 
 
 def run_polling(
     client: Client,
     handler: UpdateHandler,
     *,
+    callback_handler: Optional[CallbackQueryHandler] = None,
     poll_interval: float = DEFAULT_POLL_INTERVAL,
     updates_limit: int = DEFAULT_UPDATES_LIMIT,
     stop_event: Optional[threading.Event] = None,
@@ -125,11 +153,12 @@ def run_polling(
         updates_limit = DEFAULT_UPDATES_LIMIT
 
     offset = 0
+    callback_offset = 0
     while True:
         if stop_event is not None and stop_event.is_set():
             return
         try:
-            updates = client.get_updates(offset, updates_limit)
+            updates, callbacks = client.get_updates(offset, updates_limit, callback_offset=callback_offset)
         except grpc.RpcError:
             if stop_event is not None:
                 if stop_event.wait(timeout=poll_interval):
@@ -141,11 +170,22 @@ def run_polling(
         for u in updates:
             if u.message_id <= 0:
                 continue
+
             offset = u.message_id
             try:
                 handler(u)
             except Exception:
                 pass
+
+        for cb in callbacks:
+            if cb.id > callback_offset:
+                callback_offset = cb.id
+
+            if callback_handler is not None:
+                try:
+                    callback_handler(cb)
+                except Exception:
+                    pass
 
         if stop_event is not None:
             if stop_event.wait(timeout=poll_interval):

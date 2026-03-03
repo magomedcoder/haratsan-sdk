@@ -2,12 +2,12 @@ package haratsansdk
 
 import (
 	"context"
-	"time"
-
-	"github.com/magomedcoder/haratsan-sdk/go/gen_pb/bot_apipb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
+	"time"
+
+	"github.com/magomedcoder/haratsan-sdk/go/gen_pb/bot_apipb"
 )
 
 const DefaultPollInterval = 2 * time.Second
@@ -18,6 +18,14 @@ type Update struct {
 	FromUserId int64
 	Content    string
 	CreatedAt  int64
+}
+
+type CallbackQuery struct {
+	Id           int64
+	FromUserId   int64
+	MessageId    int64
+	CallbackData string
+	CreatedAt    int64
 }
 
 type Client struct {
@@ -46,18 +54,24 @@ func (c *Client) Close() error {
 	return c.conn.Close()
 }
 
-func (c *Client) GetUpdates(ctx context.Context, offset int64, limit int32) ([]*Update, error) {
+type GetUpdatesResult struct {
+	Updates         []*Update
+	CallbackQueries []*CallbackQuery
+}
+
+func (c *Client) GetUpdates(ctx context.Context, offset int64, limit int32, callbackOffset int64) (*GetUpdatesResult, error) {
 	resp, err := c.api.GetUpdates(ctx, &bot_apipb.GetUpdatesRequest{
-		Offset: offset,
-		Limit:  limit,
+		Offset:         offset,
+		Limit:          limit,
+		CallbackOffset: callbackOffset,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	out := make([]*Update, 0, len(resp.GetUpdates()))
+	updates := make([]*Update, 0, len(resp.GetUpdates()))
 	for _, u := range resp.GetUpdates() {
-		out = append(out, &Update{
+		updates = append(updates, &Update{
 			MessageId:  u.GetMessageId(),
 			FromUserId: u.GetFromUserId(),
 			Content:    u.GetContent(),
@@ -65,7 +79,18 @@ func (c *Client) GetUpdates(ctx context.Context, offset int64, limit int32) ([]*
 		})
 	}
 
-	return out, nil
+	callbacks := make([]*CallbackQuery, 0, len(resp.GetCallbackQueries()))
+	for _, cb := range resp.GetCallbackQueries() {
+		callbacks = append(callbacks, &CallbackQuery{
+			Id:           cb.GetId(),
+			FromUserId:   cb.GetFromUserId(),
+			MessageId:    cb.GetMessageId(),
+			CallbackData: cb.GetCallbackData(),
+			CreatedAt:    cb.GetCreatedAt(),
+		})
+	}
+
+	return &GetUpdatesResult{Updates: updates, CallbackQueries: callbacks}, nil
 }
 
 func (c *Client) SendMessage(ctx context.Context, toUserId int64, content string, replyMarkup *bot_apipb.ReplyMarkup) (messageId int64, err error) {
@@ -111,12 +136,13 @@ func BuildReplyMarkup(rows [][]Button) *bot_apipb.ReplyMarkup {
 }
 
 type UpdateHandler func(ctx context.Context, update *Update) error
-
+type CallbackQueryHandler func(ctx context.Context, cb *CallbackQuery) error
 type PollOption func(*pollConfig)
 
 type pollConfig struct {
-	pollInterval time.Duration
-	updatesLimit int32
+	pollInterval    time.Duration
+	updatesLimit    int32
+	callbackHandler CallbackQueryHandler
 }
 
 func WithPollInterval(d time.Duration) PollOption {
@@ -128,6 +154,12 @@ func WithPollInterval(d time.Duration) PollOption {
 func WithUpdatesLimit(n int32) PollOption {
 	return func(c *pollConfig) {
 		c.updatesLimit = n
+	}
+}
+
+func WithCallbackHandler(h CallbackQueryHandler) PollOption {
+	return func(c *pollConfig) {
+		c.callbackHandler = h
 	}
 }
 
@@ -148,7 +180,7 @@ func (c *Client) RunPolling(ctx context.Context, handler UpdateHandler, opts ...
 		cfg.updatesLimit = DefaultUpdatesLimit
 	}
 
-	var offset int64
+	var offset, callbackOffset int64
 	for {
 		select {
 		case <-ctx.Done():
@@ -156,7 +188,7 @@ func (c *Client) RunPolling(ctx context.Context, handler UpdateHandler, opts ...
 		default:
 		}
 
-		updates, err := c.GetUpdates(ctx, offset, cfg.updatesLimit)
+		result, err := c.GetUpdates(ctx, offset, cfg.updatesLimit, callbackOffset)
 		if err != nil {
 			if ctx.Err() != nil {
 				return
@@ -170,7 +202,7 @@ func (c *Client) RunPolling(ctx context.Context, handler UpdateHandler, opts ...
 			continue
 		}
 
-		for _, u := range updates {
+		for _, u := range result.Updates {
 			if u.MessageId <= 0 {
 				continue
 			}
@@ -178,6 +210,17 @@ func (c *Client) RunPolling(ctx context.Context, handler UpdateHandler, opts ...
 			offset = u.MessageId
 			if err := handler(ctx, u); err != nil {
 				_ = err
+			}
+		}
+
+		for _, cb := range result.CallbackQueries {
+			if cb.Id > callbackOffset {
+				callbackOffset = cb.Id
+			}
+			if cfg.callbackHandler != nil {
+				if err := cfg.callbackHandler(ctx, cb); err != nil {
+					_ = err
+				}
 			}
 		}
 
@@ -192,6 +235,7 @@ func (c *Client) RunPolling(ctx context.Context, handler UpdateHandler, opts ...
 func botTokenInterceptor(token string) grpc.UnaryClientInterceptor {
 	return func(ctx context.Context, method string, req, reply any, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 		ctx = metadata.AppendToOutgoingContext(ctx, "bot-token", token)
+
 		return invoker(ctx, method, req, reply, cc, opts...)
 	}
 }

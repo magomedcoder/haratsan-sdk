@@ -42,21 +42,35 @@ markup := haratsansdk.BuildReplyMarkup([][]haratsansdk.Button{
 	{
 		{
 			Text: "Да",
-			CallbackData: "vote_yes"б
-		}, 
+			CallbackData: "vote_yes",
+		},
 		{
 			Text: "Нет",
-			CallbackData: "vote_no"б
+			CallbackData: "vote_no",
 		},
 	},
 	{
 		{
 			Text: "Отмена",
-			CallbackData: "cancel"б
+			CallbackData: "cancel",
 		},
 	},
 })
 client.SendMessage(ctx, toUserId, "Голосуйте:", markup)
+```
+
+### Обработка нажатий кнопок (CallbackQuery)
+
+Когда пользователь нажимает inline-кнопку, бот получает `CallbackQuery`
+
+```go
+callbackHandler := func(ctx context.Context, cb *haratsansdk.CallbackQuery) error {
+    reply := "Нажато: " + cb.CallbackData
+    _, err := client.SendMessage(ctx, cb.FromUserId, reply, nil)
+    return err
+}
+
+client.RunPolling(ctx, handler, haratsansdk.WithCallbackHandler(callbackHandler))
 ```
 
 **Пример использования:** [`example/main.go`](example/main.go)

@@ -9,7 +9,7 @@ import threading
 from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from haratsan_sdk import Client, run_polling, Update, build_reply_markup
+from haratsan_sdk import Client, run_polling, Update, CallbackQuery, build_reply_markup
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ def main() -> None:
         elif content == "/vote":
             markup = build_reply_markup([
                 [
-                    ("Да", "vote_yes"), 
+                    ("Да", "vote_yes"),
                     ("Нет", "vote_no"),
                 ],
             ])
@@ -47,7 +47,7 @@ def main() -> None:
                     ("Время", "time"),
                 ],
                 [
-                    ("Отмена", "cancel")
+                    ("Отмена", "cancel"),
                 ],
             ])
             client.send_message(update.from_user_id, "Выберите действие:", reply_markup=markup)
@@ -59,7 +59,19 @@ def main() -> None:
             except Exception as e:
                 logger.exception("SendMessage: %s", e)
 
-    run_polling(client, handler, stop_event=stop)
+    def callback_handler(cb: CallbackQuery) -> None:
+        reply_map = {
+            "vote_yes": "Вы проголосовали: Да",
+            "vote_no": "Вы проголосовали: Нет",
+            "help": "Справка: /start, /time, /vote, /menu",
+            "time": f"Сейчас время: {datetime.now().isoformat()}",
+            "cancel": "Действие отменено",
+        }
+        reply = reply_map.get(cb.callback_data, f"Нажато: {cb.callback_data}")
+        message_id = client.send_message(cb.from_user_id, reply)
+        logger.info("CallbackQuery от пользователя %s (message_id=%s, data=%r): %s", cb.from_user_id, cb.message_id, cb.callback_data, reply)
+
+    run_polling(client, handler, callback_handler=callback_handler, stop_event=stop)
 
 
 if __name__ == "__main__":
